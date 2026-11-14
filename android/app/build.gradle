@@ -1,0 +1,19 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.veilfall.game'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.veilfall.game'
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+    }
+    // the whole game lives in /game at the repo root and is bundled as APK assets
+    sourceSets { main { assets.srcDirs = ['../../game'] } }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
