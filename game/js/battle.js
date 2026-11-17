@@ -38,7 +38,7 @@
     st = { n, ch, C, done, waves: G.WAVES[n % 5].split('|'), wave: -1, units: [], parts: new Parts(), nums: [], proj: [], ev: [], slashes: [],
       shake: 0, flash: 0, flashC: '#fff', cutin: null, over: false, banner: 0, bannerT: '', wait: 0, time: 0 };
     G.S.team.forEach((id, i) => { const h = G.HEROES[id], s = G.heroStats(id);
-      st.units.push(unit(0, { id, name: h.name, el: h.el, maxhp: s.hp, atk: s.atk, interval: h.spd, sprite: G.Art.hero(id),
+      st.units.push(unit(0, { id, name: h.name, el: h.el, maxhp: s.hp, atk: s.atk, interval: h.spd, sprite: G.Art.hero(id), cut: G.Art.hero(id, 'half'), scale: 1.32,
         ranged: !MELEE[h.look.weapon], ult: h.ult, slot: HS[i] })); });
     buildHud(); nextWave();
     cv.style.display = 'block'; B.active = true; G.Bg.set(C.pal);
@@ -51,7 +51,7 @@
     [...code].forEach((k, i) => {
       const el = st.C.els[(i + st.wave) % st.C.els.length];
       if (k === 'B') { const b = st.C.boss;
-        st.units.push(unit(1, { name: b.name, el: b.el, maxhp: 5200 * hs, atk: 95 * as, interval: 2, sprite: G.Art.boss(st.ch), boss: true, scale: 1.75,
+        st.units.push(unit(1, { name: b.name, el: b.el, maxhp: 5200 * hs, atk: 95 * as, interval: 2, sprite: G.Art.boss(st.ch), boss: true, scale: 1.9,
           ult: { name: 'Hollow Nova', aoe: true, pow: 1.5 }, slot: BS[0] }));
       } else { const e = G.ENEMIES[k];
         st.units.push(unit(1, { name: e.name, el, maxhp: e.hp * hs, atk: e.atk * as, interval: e.spd, sprite: G.Art.monster(e.shape, el), ranged: e.ranged,
@@ -254,8 +254,8 @@
     c.fillStyle = g; c.fillRect(-W, -bh / 2, W * 2, bh);
     c.fillStyle = 'rgba(255,255,255,.35)'; for (let i = 0; i < 14; i++) { const y = ((i * 37) % 100 / 100 - .5) * bh, x = ((q.t * (900 + i * 130) + i * 211) % (W * 2.4)) - W * 1.2; c.fillRect(x, y, 120 + i * 9, 2); }
     c.restore();
-    const h = H * 0.5, w = h * 400 / 520, x = -w + (W * 0.3 + w) * ease + k * 26;
-    c.drawImage(u.sprite, x - w / 2, H * 0.47 - h * 0.52, w, h);
+    const im = u.cut || u.sprite, h = H * 0.56, w = h * im.width / im.height, x = -w + (W * 0.32 + w) * ease + k * 26;
+    c.drawImage(im, x - w / 2, H * 0.47 - h * 0.5, w, h);
     c.textAlign = 'right'; c.font = `italic 900 ${W * 0.078}px Georgia, serif`; c.lineWidth = 6; c.strokeStyle = 'rgba(8,4,20,.9)'; c.lineJoin = 'round';
     const tx = W * 1.5 - (W * 0.55) * ease - k * 20;
     c.strokeText(u.ult.name, tx, H * 0.6); c.fillStyle = '#fff'; c.fillText(u.ult.name, tx, H * 0.6);

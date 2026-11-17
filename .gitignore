@@ -5,3 +5,4 @@ android/local.properties
 node_modules/
 .DS_Store
 dist/
+tools/node_modules/

@@ -8,13 +8,28 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.io.IOException;
+
 /** Full-screen WebView shell that runs the bundled game from APK assets. */
 public class MainActivity extends Activity {
+    private static final String HOST = "appassets.androidplatform.net";
     private WebView web;
+
+    private static String mime(String p) {
+        if (p.endsWith(".html")) return "text/html";
+        if (p.endsWith(".js")) return "text/javascript";
+        if (p.endsWith(".css")) return "text/css";
+        if (p.endsWith(".webp")) return "image/webp";
+        if (p.endsWith(".png")) return "image/png";
+        if (p.endsWith(".vrm")) return "model/gltf-binary";
+        return "application/octet-stream";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +42,24 @@ public class MainActivity extends Activity {
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
         s.setMediaPlaybackRequiresUserGesture(false);
-        s.setAllowFileAccess(true);
+        s.setAllowFileAccess(false);
         s.setTextZoom(100);
-        web.setWebViewClient(new WebViewClient());
+        // serve the bundled game from a secure local origin so fetch() of the 3D models works
+        web.setWebViewClient(new WebViewClient() {
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest req) {
+                if (!HOST.equals(req.getUrl().getHost())) return null;
+                String path = req.getUrl().getPath();
+                if (path == null || path.equals("/")) path = "/index.html";
+                try {
+                    return new WebResourceResponse(mime(path), null, getAssets().open(path.substring(1)));
+                } catch (IOException e) {
+                    return new WebResourceResponse("text/plain", null, 404, "Not Found", null, null);
+                }
+            }
+        });
         setContentView(web);
-        web.loadUrl("file:///android_asset/index.html");
+        web.loadUrl("https://" + HOST + "/index.html");
     }
 
     private void immersive() {

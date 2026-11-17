@@ -23,6 +23,10 @@
       <span class="cur"><i class="d"></i>${fmt(S.dust)}</span><span class="cur"><i class="g"></i>${fmt(S.gold)}</span></div>`; }
   function bind(map) { for (const k in map) { const e = ui.querySelector(k); if (e) e.onclick = ev => { click(); map[k](ev); }; }
     const b = ui.querySelector('#back'); if (b) b.onclick = () => { click(); backFn(); }; }
+  /* a live 3D character slot; shows the baked still until (or if) the model is on screen */
+  const c3 = (id, cls, mode) => `<div class="c3 ${cls || ''}" data-id="${id}" data-mode="${mode || 'full'}" style="background-image:url(${G.Art.url(id, 'full')})"></div>`;
+  function mount3d(spin) { const el = ui.querySelector('.c3'); if (!el || !G.C3.ok) return; const h = G.HEROES[el.dataset.id] || G.NPC[el.dataset.id];
+    G.C3.mount(el, h.model, { mode: el.dataset.mode, color: G.EL[h.el].c, spin, pose: h.pose }).then(() => el.classList.add('live')).catch(() => {}); }
   const elChip = el => `<span class="el" style="--el:${G.EL[el].c}"><i></i>${G.EL[el].name}</span>`;
   function card(id, extra) { const h = G.HEROES[id], o = S.heroes[id];
     return `<button class="card r${h.rar} ${o ? '' : 'locked'}" data-id="${id}" style="--el:${G.EL[h.el].c}"><img src="${G.Art.url(id)}" alt="">
@@ -32,7 +36,8 @@
   function title() {
     G.Bg.set(G.HOME_PAL); backFn = null;
     ui.innerHTML = `<div class="title"><div class="logo"><small>✦ Echoes of the Last Star ✦</small><h1>VEILFALL</h1></div>
-      <img class="hero-art float" src="${G.Art.url('lyra')}" alt=""><div class="tap">TAP TO BEGIN</div><div class="ver">Act I · v1.0</div></div>`;
+      ${c3('lyra', 'tall')}<div class="tap">TAP TO BEGIN</div><div class="ver">Act I · v1.0</div></div>`;
+    mount3d();
     ui.firstChild.onclick = () => { G.Sfx.play('reveal'); G.Sfx.music();
       if (!S.seen.pro) story(G.PROLOGUE, () => { S.seen.pro = 1; G.save(); home(); }); else home(); };
   }
@@ -47,10 +52,11 @@
       : `Next: ${G.CHAPTERS[ch].name}. If a fight feels rough, level up your Echoes first!`;
     ui.innerHTML = top() + `<div class="home">
       <div class="lyra"><img src="${G.Art.url('lyra')}" alt=""><p><b>Lyra</b>${hint}</p></div>
-      <div class="feature"><img class="hero-art float" src="${G.Art.url(lead)}" alt=""><div class="fname"><span class="st r${h.rar}">${stars(h.rar)}</span><h2>${h.name}</h2><em>${h.title}</em></div></div>
+      <div class="feature">${c3(lead)}<div class="fname"><span class="st r${h.rar}">${stars(h.rar)}</span><h2>${h.name}</h2><em>${h.title}</em></div></div>
       <div class="nav"><button class="btn big" id="nStory"><small>Chapter ${ch + 1}</small>STORY</button>
         <div class="row"><button class="btn alt ${owned <= 1 ? 'pulse' : ''}" id="nSummon">SUMMON</button><button class="btn alt" id="nEchoes">ECHOES</button></div>
         <button class="link" id="nMute">${S.mute ? 'Sound: off' : 'Sound: on'}</button></div></div>`;
+    mount3d();
     bind({ '#nStory': () => map(ch), '#nSummon': summon, '#nEchoes': echoes,
       '#nMute': () => { S.mute = !S.mute; G.Sfx.mute(S.mute); G.save(); home(); } });
   }
@@ -60,7 +66,7 @@
     const C = G.CHAPTERS[ch], open = S.prog >= ch * 5; G.Bg.set(C.pal);
     ui.innerHTML = top('Story', home) + `<div class="map"><div class="chead"><button class="chip" id="cp" ${ch ? '' : 'disabled'}>‹</button>
       <div><small>CHAPTER ${ch + 1}</small><h2>${C.name}</h2><em>${C.sub}</em></div><button class="chip" id="cn" ${ch < 4 ? '' : 'disabled'}>›</button></div>
-      <div class="bossprev" style="--el:${G.EL[C.boss.el].c}"><img class="float" src="${G.Art.boss(ch).toDataURL()}" alt=""><span>${S.prog >= ch * 5 + 5 ? C.boss.name.toUpperCase() + ' · DEFEATED' : 'SOMETHING WAITS AT THE END'}</span></div>
+      <div class="bossprev" style="--el:${G.EL[C.boss.el].c}"><img class="float" src="${ch === 4 ? G.Art.url('vesper', 'full') : G.Art.boss(ch).toDataURL()}" alt=""><span>${S.prog >= ch * 5 + 5 ? C.boss.name.toUpperCase() + ' · DEFEATED' : 'SOMETHING WAITS AT THE END'}</span></div>
       <div class="stages">${open ? C.stages.map((nm, s) => { const n = ch * 5 + s, done = n < S.prog, lock = n > S.prog;
         return `<button class="stage ${done ? 'done' : ''} ${lock ? 'lock' : ''} ${s === 4 ? 'boss' : ''}" data-n="${n}" ${lock ? 'disabled' : ''}>
           <span class="num">${ch + 1}-${s + 1}</span><span class="nm">${nm}${s === 4 ? ' <i>BOSS</i>' : ''}<small>Power ${fmt(recPower(n))} · ${C.els.map(e => G.EL[e].name).join(' / ')}</small></span>
@@ -111,7 +117,7 @@
       const [sp, txt] = lines[i], who = G.HEROES[sp] || G.NPC[sp]; full = txt;
       const tgt = sp ? p : narr; box.style.display = sp ? '' : 'none'; narr.style.display = sp ? 'none' : ''; tgt.textContent = '';
       if (sp) { nm.textContent = who ? who.name : sp; nm.style.setProperty('--el', who ? G.EL[who.el].c : '#888');
-        if (who) { if (art.dataset.id !== sp) { art.dataset.id = sp; art.src = G.Art.url(sp); art.classList.remove('in'); void art.offsetWidth; art.classList.add('in'); } art.style.opacity = 1; }
+        if (who) { if (art.dataset.id !== sp) { art.dataset.id = sp; art.src = G.Art.url(sp, 'half'); art.classList.remove('in'); void art.offsetWidth; art.classList.add('in'); } art.style.opacity = 1; }
         else art.style.opacity = 0; } else { art.style.opacity = 0.0; narr.classList.remove('in'); void narr.offsetWidth; narr.classList.add('in'); }
       let k = 0; typing = setInterval(() => { k += 2; tgt.textContent = txt.slice(0, k); if (k % 6 === 0) G.Sfx.play('text'); if (k >= txt.length) { clearInterval(typing); typing = null; } }, 22);
     }
@@ -124,7 +130,7 @@
   function summon() {
     G.Bg.set(['#0d0620', '#3a1a7a', '#ffcf5a']);
     const f = POOL(5);
-    ui.innerHTML = top('Star Altar', home) + `<div class="summon"><div class="banner"><div class="trio">${f.slice(0, 3).map((id, i) => `<img class="float" style="animation-delay:-${i * 1.3}s" src="${G.Art.url(id)}" alt="">`).join('')}</div>
+    ui.innerHTML = top('Star Altar', home) + `<div class="summon"><div class="banner"><div class="trio">${f.slice(0, 3).map((id, i) => `<img class="float" style="animation-delay:-${i * 1.3}s" src="${G.Art.url(id, 'full')}" alt="">`).join('')}</div>
       <h2>Call of the Fallen Stars</h2><p>5★ 3% · 4★ 15% · 3★ 82%<br>Ten-call guarantees 4★ or higher</p>
       <div class="pity"><u style="width:${S.pity * 2}%"></u><span>Guaranteed 5★ in ${50 - S.pity} calls</span></div></div>
       <div class="row"><button class="btn alt" id="p1">CALL ×1<small><i class="d"></i>160</small></button><button class="btn" id="p10">CALL ×10<small><i class="d"></i>1,600</small></button></div>
@@ -151,11 +157,11 @@
     function show() {
       if (++i >= res.length) return res.length > 1 ? grid() : done();
       const { id, isNew } = res[i], h = G.HEROES[id], E = G.EL[h.el];
-      ui.innerHTML = `<div class="reveal r${h.rar}" style="--el:${E.c};--rc:${G.RARC[h.rar]}"><div class="rays"></div><img class="hero-art" src="${G.Art.url(id)}" alt="">
+      ui.innerHTML = `<div class="reveal r${h.rar}" style="--el:${E.c};--rc:${G.RARC[h.rar]}"><div class="rays"></div>${c3(id, 'rev')}
         <div class="rinfo"><span class="st">${stars(h.rar)}</span><h1>${h.name}</h1><em>${h.title}</em><div>${elChip(h.el)} <span class="el plain">${h.role}</span></div>
         <b class="${isNew ? 'new' : ''}">${isNew ? 'NEW ECHO!' : '+1 Echo Shard'}</b></div>${res.length > 1 ? '<button class="chip skip">Skip ›</button>' : ''}<span class="tap">tap to continue</span></div>`;
       G.Sfx.play(h.rar === 5 ? 'gold' : 'reveal'); G.Bg.pulse(h.rar === 5 ? 1 : 0.35); G.fxBurst(.5, .42, G.RARC[h.rar], h.rar * h.rar * 5, 300 + h.rar * 60);
-      ui.firstChild.onclick = show; const sk = ui.querySelector('.skip'); if (sk) sk.onclick = e => { e.stopPropagation(); i = res.length; grid(); };
+      mount3d(true); ui.firstChild.onclick = show; const sk = ui.querySelector('.skip'); if (sk) sk.onclick = e => { e.stopPropagation(); i = res.length; grid(); };
     }
     function grid() {
       ui.innerHTML = `<div class="sum-grid"><h2>Echoes Answered</h2><div class="grid">${res.map(r => card(r.id, r.isNew ? '<span class="tm new">NEW</span>' : '')).join('')}</div><button class="btn" id="gOk">OK</button></div>`;
@@ -174,7 +180,7 @@
   }
   function detail(id) {
     const h = G.HEROES[id], o = S.heroes[id], E = G.EL[h.el], s = G.heroStats(id), cost = lvCost(o.lv), need = o.asc + 1, inTeam = S.team.includes(id);
-    ui.innerHTML = top(h.name, echoes) + `<div class="detail" style="--el:${E.c};--rc:${G.RARC[h.rar]}"><div class="dart"><img class="hero-art float" src="${G.Art.url(id)}" alt="">
+    ui.innerHTML = top(h.name, echoes) + `<div class="detail" style="--el:${E.c};--rc:${G.RARC[h.rar]}"><div class="dart">${c3(id)}
       <div class="dhead"><span class="st">${stars(h.rar)}</span><h2>${h.name}</h2><em>${h.title}</em><div>${elChip(h.el)} <span class="el plain">${h.role}</span></div></div></div>
       <div class="panel"><div class="stats"><div><small>LEVEL</small><b>${o.lv}<i>/${MAXLV}</i></b></div><div><small>HP</small><b>${fmt(s.hp)}</b></div><div><small>ATK</small><b>${fmt(s.atk)}</b></div><div><small>POWER</small><b>${fmt(s.power)}</b></div></div>
       <div class="ult"><b>✦ ${h.ult.name}</b><span>${h.ult.desc}</span><small>${E.name} is strong against ${G.EL[E.beats].name}</small></div>
@@ -182,6 +188,7 @@
       <div class="row"><button class="btn sm" id="dLv" ${o.lv >= MAXLV ? 'disabled' : ''}>LEVEL UP<small><i class="g"></i>${o.lv >= MAXLV ? 'MAX' : fmt(cost)}</small></button>
         <button class="btn sm alt" id="dAsc" ${o.asc >= 5 ? 'disabled' : ''}>ASCEND ${'◆'.repeat(o.asc)}${'◇'.repeat(5 - o.asc)}<small>${o.asc >= 5 ? 'MAX' : `Shards ${o.shards}/${need}`}</small></button></div>
       <button class="btn sm ${inTeam ? 'ghost' : ''}" id="dTeam">${inTeam ? 'REMOVE FROM TEAM' : 'ADD TO TEAM'}</button></div></div>`;
+    mount3d();
     bind({ '#dLv': () => { if (S.gold < cost) return toast('Not enough gold — replay stages to earn more.'); S.gold -= cost; o.lv++; G.save(); G.Sfx.play('heal'); G.fxBurst(.5, .3, E.c, 30); detail(id); },
       '#dAsc': () => { if (o.shards < need) return toast('Summon duplicates of this Echo to gain shards.'); o.shards -= need; o.asc++; G.save(); G.Sfx.play('gold'); G.fxBurst(.5, .3, '#ffcf5a', 60); detail(id); },
       '#dTeam': () => { if (inTeam) { if (S.team.length < 2) return toast('Your team needs at least one Echo.'); S.team = S.team.filter(x => x !== id); }
@@ -195,10 +202,12 @@
   addEventListener('resize', resize); resize();
   let last = performance.now();
   function loop(now) { const dt = Math.min(0.1, (now - last) / 1000); last = now;
-    G.Bg.frame(now / 1000, dt); if (G.Battle.active) G.Battle.frame(dt);
+    G.Bg.frame(now / 1000, dt); if (G.Battle.active) G.Battle.frame(dt); else if (G.C3.ok) G.C3.frame(dt);
     if (parts.a.length) { fx.clearRect(0, 0, FW, FH); parts.step(dt); parts.draw(fx); if (!parts.a.length) fx.clearRect(0, 0, FW, FH); }
     requestAnimationFrame(loop); }
   requestAnimationFrame(loop);
   document.addEventListener('visibilitychange', () => G.Sfx.pause(document.hidden));
-  title();
+  S.team = S.team.filter(id => G.HEROES[id]); Object.keys(S.heroes).forEach(id => { if (!G.HEROES[id]) delete S.heroes[id]; });
+  if (!S.heroes.kael) S.heroes.kael = { lv: 1, asc: 0, shards: 0 }; if (!S.team.length) S.team = ['kael'];
+  G.Art.preload().then(title);
 })();
