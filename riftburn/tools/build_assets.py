@@ -15,14 +15,14 @@ import numpy as np
 from PIL import Image, ImageFilter
 
 
-def key_green(img, work=1024):
+def key_green(img, work=1024, key=(1.08, 0.22, 26.0)):
     img = img.convert("RGB").resize((work, work), Image.LANCZOS)
     a = np.asarray(img).astype(np.float32)
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
     other = np.maximum(r, b)
     green = g - other
     ratio = g / (other + 1.0)
-    score = np.minimum((ratio - 1.08) / 0.22, green / 26.0)
+    score = np.minimum((ratio - key[0]) / key[1], green / key[2])
     alpha = 1.0 - np.clip(score, 0.0, 1.0)
     # despill: no kept pixel may be greener than its strongest other channel
     spill = (alpha < 0.999) | (green > 0)
@@ -36,7 +36,7 @@ def key_green(img, work=1024):
     return Image.fromarray(out, "RGBA")
 
 
-def keep_main(img):
+def keep_main(img, only_largest=False):
     """Drop stray islands far from the subject (needs scipy; skipped without)."""
     try:
         from scipy import ndimage
@@ -49,8 +49,8 @@ def keep_main(img):
         return img
     sizes = ndimage.sum(mask, labels, range(1, n + 1))
     keep = np.zeros(n + 1, bool)
-    keep[1:] = sizes >= sizes.max() * 0.03
-    grown = ndimage.binary_dilation(keep[labels], iterations=6)
+    keep[1:] = sizes >= sizes.max() * (0.999 if only_largest else 0.03)
+    grown = ndimage.binary_dilation(keep[labels], iterations=2 if only_largest else 6)
     a[..., 3] = np.where(grown, a[..., 3], 0)
     return Image.fromarray(a, "RGBA")
 
@@ -95,7 +95,8 @@ def main():
             print("skip (missing raw):", row["id"])
             continue
         if row["type"] == "sprite":
-            img = fit_square(keep_main(key_green(Image.open(src))), row.get("size", 256), row.get("rot", 0))
+            keyed = key_green(Image.open(src), key=tuple(row.get("key", (1.08, 0.22, 26.0))))
+            img = fit_square(keep_main(keyed, row.get("only") == "largest"), row.get("size", 256), row.get("rot", 0))
             img.save(out / f"{row['id']}.png", optimize=True)
             bg = Image.new("RGBA", img.size, (30, 36, 70, 255))
             thumbs.append((row["id"], Image.alpha_composite(bg, img).convert("RGB")))

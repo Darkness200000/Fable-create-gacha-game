@@ -30,14 +30,14 @@ export const CFG = {
 /** size = drawn size in world px; r = honest hit radius. */
 export const ENEMIES = {
   crawler: { hp: 20, speed: 94, r: 17, dmg: 9, score: 10, xp: 1, size: 60, cost: 1, from: 1 },
-  runner: { hp: 13, speed: 208, r: 12, dmg: 7, score: 15, xp: 1, size: 52, cost: 1, from: 2 },
+  runner: { hp: 13, speed: 208, r: 12, dmg: 7, score: 15, xp: 1, size: 66, cost: 1, from: 2 },
   gunner: { hp: 46, speed: 74, r: 19, dmg: 9, score: 30, xp: 2, size: 70, cost: 3, from: 3 },
   bomber: { hp: 34, speed: 130, r: 18, dmg: 26, score: 25, xp: 2, size: 62, cost: 2, from: 4 },
   splitter: { hp: 70, speed: 86, r: 23, dmg: 11, score: 35, xp: 2, size: 78, cost: 3, from: 6 },
   mite: { hp: 9, speed: 168, r: 9, dmg: 5, score: 5, xp: 1, size: 32, cost: 0, from: 99, sprite: "crawler" },
   brute: { hp: 300, speed: 62, r: 34, dmg: 22, score: 120, xp: 6, size: 124, cost: 7, from: 7 },
-  sniper: { hp: 40, speed: 66, r: 16, dmg: 20, score: 45, xp: 3, size: 76, cost: 4, from: 8 },
-  elite: { hp: 480, speed: 136, r: 24, dmg: 18, score: 350, xp: 12, size: 96, cost: 12, from: 9 },
+  sniper: { hp: 40, speed: 66, r: 16, dmg: 20, score: 45, xp: 3, size: 92, cost: 4, from: 8 },
+  elite: { hp: 480, speed: 136, r: 24, dmg: 18, score: 350, xp: 12, size: 124, cost: 12, from: 9 },
 };
 
 export const BOSSES = {
