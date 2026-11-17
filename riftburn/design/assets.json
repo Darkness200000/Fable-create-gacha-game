@@ -1,0 +1,19 @@
+{
+  "base": "https://d8j0ntlcm91z4.cloudfront.net/user_3M6uRm9z9GGxVQM4SE6H4fTlmab/",
+  "assets": [
+    { "id": "hero", "type": "sprite", "size": 256, "raw": "hero.png", "src": "hf_20261115_011810_aaa7dbf1-166e-437d-8c35-7069248f7243.png" },
+    { "id": "crawler", "type": "sprite", "size": 256, "raw": "crawler.png", "src": "hf_20261114_192424_1911424d-9f2a-41d7-8fc4-63dae1c725f9.png" },
+    { "id": "runner", "type": "sprite", "size": 256, "raw": "runner.png", "src": "hf_20261116_185604_94f05391-2cc6-4536-92de-bf3016155e2e.png" },
+    { "id": "gunner", "type": "sprite", "size": 256, "raw": "gunner.png", "src": "hf_20261115_011810_2f045be7-d892-4bd6-b10c-aaea6340c453.png" },
+    { "id": "bomber", "type": "sprite", "size": 256, "raw": "bomber.png", "src": "hf_20261116_190034_193362bd-98c9-418c-82ef-cd8e5b0d5fe2.png" },
+    { "id": "splitter", "type": "sprite", "size": 256, "raw": "splitter.png", "src": "hf_20261116_190250_473b53a1-3282-4697-b254-439d4c2712d8.png" },
+    { "id": "brute", "type": "sprite", "size": 320, "raw": "brute.png", "src": "hf_20261116_185253_5901a965-62db-4ad1-b8e5-187724162a92.png" },
+    { "id": "sniper", "type": "sprite", "size": 256, "raw": "sniper.png", "src": "hf_20261116_190148_7582ff82-f31d-4728-b2b5-66607d6219c9.png" },
+    { "id": "elite", "type": "sprite", "size": 320, "raw": "elite.png", "src": "hf_20261116_190521_9e4e6232-dfee-4763-af58-3dfc244098bc.png" },
+    { "id": "warden", "type": "sprite", "size": 512, "raw": "warden.png", "src": "hf_20261114_192424_c318579b-8a33-41b6-b113-406fcc8d850a.png" },
+    { "id": "hive", "type": "sprite", "size": 512, "raw": "hive.png", "src": "hf_20261116_190735_825739e9-63bc-4c2b-9664-972b89c91125.png" },
+    { "id": "titan", "type": "sprite", "size": 512, "raw": "titan.png", "src": "hf_20261116_190933_1de80a9c-b8de-4874-aba4-d0eac3e388b1.png" },
+    { "id": "drone", "type": "sprite", "size": 128, "raw": "drone.png", "src": "hf_20261116_191113_8d5ed92d-4414-482e-8e14-788006630977.png" },
+    { "id": "floor1", "type": "floor", "raw": "floor1.png", "src": "hf_20261114_192326_3e212aa1-35a5-4d0e-aeda-4276c54791fe.png" }
+  ]
+}
