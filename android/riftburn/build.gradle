@@ -1,0 +1,29 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.riftburn.game'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.riftburn.game'
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+    }
+    // The game is /riftburn/public (plus the rules module in /riftburn/src),
+    // bundled as APK assets and served to the WebView by MainActivity.
+    sourceSets { main { assets.srcDirs = ['../../riftburn/public', '../../riftburn/src'] } }
+    // A fixed debug key, so a newer build installs over the old one and keeps the save.
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

@@ -865,6 +865,19 @@ async function boot() {
 }
 boot();
 
+// Android shell: the hardware back button asks the game first (1 = handled).
+window.__rbBack = () => {
+  if (mode === "run" && !screen && S && S.status === "play") {
+    pause();
+    return 1;
+  }
+  if (backAction) {
+    backAction();
+    return 1;
+  }
+  return 0;
+};
+
 // hooks for automated play-tests (tools/playtest.mjs)
 window.__rb = {
   get S() {

@@ -13,11 +13,21 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Build debug APK
+      - name: Build RIFTBURN art and audio
+        run: |
+          python3 -m pip install --quiet pillow numpy scipy
+          bash riftburn/tools/fetch_assets.sh
+      - name: Build debug APKs
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
-      - run: cp android/app/build/outputs/apk/debug/app-debug.apk Veilfall.apk
+        run: ./gradlew :app:assembleDebug :riftburn:assembleDebug --no-daemon --stacktrace
+      - run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk Veilfall.apk
+          cp android/riftburn/build/outputs/apk/debug/riftburn-debug.apk Riftburn.apk
       - uses: actions/upload-artifact@v4
         with:
           name: Veilfall-apk
           path: Veilfall.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Riftburn-apk
+          path: Riftburn.apk
