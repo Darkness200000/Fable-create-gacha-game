@@ -32,3 +32,10 @@ cd android && ./gradlew assembleDebug   # → app/build/outputs/apk/debug/app-de
 | `game/js/battle.js`, `main.js`, `audio.js` | Battle engine, screens/save/summoning, synthesised audio. |
 | `android/` | Thin full-screen WebView shell that bundles `game/` as APK assets. |
 | `tools/bundle.js` | `node tools/bundle.js` → single-file `dist/veilfall.html`. |
+
+---
+
+## Also in this repository: RIFTBURN
+
+`riftburn/` holds a second game — a twin-stick arena roguelite for the browser, built and hosted with Higgsfield.
+Play it at https://riftburn.higgsfield.app and see [`riftburn/README.md`](riftburn/README.md).

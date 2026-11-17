@@ -108,19 +108,29 @@
       "id": "floor1",
       "type": "floor",
       "raw": "floor1.png",
-      "src": "hf_20261114_192326_3e212aa1-35a5-4d0e-aeda-4276c54791fe.png"
+      "src": "hf_20261114_192326_3e212aa1-35a5-4d0e-aeda-4276c54791fe.png",
+      "darken": 0.78
     },
     {
       "id": "floor2",
       "type": "floor",
       "raw": "floor2.png",
-      "src": "hf_20261116_191206_b508c63f-41aa-4602-9627-c0b80ea09c40.png"
+      "src": "hf_20261116_191206_b508c63f-41aa-4602-9627-c0b80ea09c40.png",
+      "darken": 0.85
     },
     {
       "id": "floor3",
       "type": "floor",
       "raw": "floor3.png",
       "src": "hf_20261117_034405_ca171fe7-df0a-479c-90ca-2ff24645c70c.png"
+    },
+    {
+      "id": "keyart",
+      "type": "image",
+      "width": 1600,
+      "quality": 82,
+      "raw": "keyart.png",
+      "src": "hf_20261117_034458_6b242afa-b546-4dc9-b6f1-447fde8727ca.png"
     }
   ],
   "music": {

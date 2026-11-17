@@ -5,7 +5,7 @@
 
 export const CFG = {
   world: { w: 2600, h: 1700, margin: 60 },
-  viewArea: 1240 * 720,
+  viewArea: 1120 * 650,
   step: 1 / 60,
   player: {
     r: 13,
