@@ -1,0 +1,20 @@
+id,role,type,description,size/ratio,style line ref,source
+hero,player sprite (rotates with aim),sprite,armored space marine with twin rifles seen from above,256px 1:1,STYLE,generate
+crawler,enemy sprite (also used small for mites),sprite,four-legged insectoid crawler,256px 1:1,STYLE,generate
+runner,enemy sprite,sprite,dart-shaped runner with scythe arms,256px 1:1,STYLE,generate
+gunner,enemy sprite,sprite,bulky gunner with glowing cannon,256px 1:1,STYLE,generate
+bomber,enemy sprite,sprite,bloated bomber with pulsing core,256px 1:1,STYLE,generate
+splitter,enemy sprite,sprite,two-core blob that splits,256px 1:1,STYLE,generate
+brute,enemy sprite,sprite,horned armored beetle,320px 1:1,STYLE,generate
+sniper,enemy sprite,sprite,long thin sniper with lens eye,256px 1:1,STYLE,generate
+elite,enemy sprite,sprite,crowned champion with twin blades,320px 1:1,STYLE,generate
+warden,boss sprite (wave 5),sprite,crab-like siege walker,512px 1:1,STYLE,generate
+hive,boss sprite (wave 10),sprite,hive queen covered in egg sacs,512px 1:1,STYLE,generate
+titan,boss sprite (wave 15),sprite,one-eyed titan ringed with blades,512px 1:1,STYLE,generate
+drone,orbiting gun drone,sprite,round white drone with cyan ring,128px 1:1,STYLE,generate
+floor1,sector 1 tiling floor,tile,space-station deck plating,512px 1:1,STYLE,generate
+floor2,sector 2 tiling floor,tile,cracked obsidian rock with crystal veins,512px 1:1,STYLE,generate
+floor3,sector 3 tiling floor,tile,void glass with violet rift cracks,512px 1:1,STYLE,generate
+keyart,title-screen backdrop and cover scene,background,marine holding the line against the rift,1600px 16:9,STYLE,generate
+music,looping combat soundtrack (filtered in menus),music,dark synthwave 140 bpm,28.8s loop,-,generate
+sfx,all sound effects,sfx,synthesised at runtime with WebAudio,-,-,code
