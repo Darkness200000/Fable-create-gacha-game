@@ -15,8 +15,11 @@ jobs:
           java-version: 17
       - name: Build RIFTBURN art and audio
         run: |
-          python3 -m pip install --quiet pillow numpy scipy
-          bash riftburn/tools/fetch_assets.sh
+          # the processed files are committed; only rebuild them if they are missing
+          if [ ! -f riftburn/public/assets/hero.png ]; then
+            python3 -m pip install --quiet pillow numpy scipy
+            bash riftburn/tools/fetch_assets.sh
+          fi
       - name: Build debug APKs
         working-directory: android
         run: ./gradlew :app:assembleDebug :riftburn:assembleDebug --no-daemon --stacktrace

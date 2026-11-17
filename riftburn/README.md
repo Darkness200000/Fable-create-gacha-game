@@ -49,9 +49,17 @@ salvage, so a forged score can't top the board or buy upgrades.
 Sprites, floors, key art and the soundtrack were generated with Higgsfield;
 `design/assets.csv` lists every asset and `design/assets.json` records the
 source generations. `tools/build_assets.py` chroma-keys the sprites off their
-green backdrop and makes the floor tiles seamless. The processed files live in
-the Higgsfield project (they are not checked into this repository — without
-them the game falls back to simple code-drawn stand-ins, so it still runs).
+green backdrop and makes the floor tiles seamless; `tools/fetch_assets.sh`
+rebuilds `public/assets/` from those sources.
+
+## Android
+
+`android/riftburn` is a small WebView app that bundles the game and runs it
+offline (profile saved on the device). Build it with the Android SDK and JDK 17+:
+
+```bash
+cd android && ./gradlew :riftburn:assembleDebug   # → riftburn/build/outputs/apk/debug/riftburn-debug.apk
+```
 
 ## Run it locally
 
